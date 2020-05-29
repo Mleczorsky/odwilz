@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <title>Reactions</title>
+    <style>
+        #animationBox{
+            width: 100vw;
+            height: 100vh;
+        }
+        div{
+            font-family: Nunito Sans;
+            color: white;
+            font-size: 100px;
+        }
+        .falling{
+            opacity: 0.7;
+            position: absolute;
+        }
+        .displayer{
+            position: absolute;
+            bottom: 20px;
+        }
+        .left{
+            left:40px;
+        }
+        .right{
+            right: 40px;
+        }
+        .indicator{
+            width: 120px;
+            height: 120px;
+        }
+        .row{
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+        }
+        .rev{
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+<body>
+    <div id="animationBox"></div>
+
+    <div class="displayer left">
+        <div class="row">
+            <img src="/reactions/hearts.png" class="indicator">
+            <div id="hearts"></div>
+        </div>
+
+        <div class="row">
+            <img src="/reactions/likes.png" class="indicator">
+            <div id="likes"></div>
+        </div>
+        
+    </div>
+
+    <div class="displayer right">
+        <div class="row rev">
+            <img src="/reactions/wows.png" class="indicator">
+            <div id="wows"></div>
+        </div>
+        <div class="row rev">
+            <img src="/reactions/bocians.png" class="indicator">
+            <div id="bocians"></div>
+        </div>
+        
+        
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const frameRate = 30;
+        const limiter = 1;
+        const limitCooldown = 300;
+        const elements = {
+            hearts: document.querySelector('#hearts'),
+            likes: document.querySelector('#likes'),
+            wows: document.querySelector('#wows'),
+            bocians: document.querySelector('#bocians'),
+        }
+        // const text = {
+        //     hearts : "Serduszka",
+        //     likes  : "Polubienia",
+        //     wows   : "Wooow",
+        //     bocians: "Bociany"
+        // }
+        const ilosc = {
+            hearts : 0,
+            likes  : 0,
+            wows   : 0,
+            bocians: 0
+        }
+        const lastSecound = {
+            hearts : 0,
+            likes  : 0,
+            wows   : 0,
+            bocians: 0
+        }
+        const queue = {
+            hearts : 0,
+            likes  : 0,
+            wows   : 0,
+            bocians: 0
+        }
+        const animBox = document.querySelector('#animationBox')
+        const fallingReactions = [];
+        const obj2arr = ( obj ) => Object.keys( obj ).map( ( key ) => {
+            return { 
+                key:key, 
+                data:obj[key]
+            } 
+        })
+        
+        //event handling
+        socket.on('setReactions', ( data ) => {
+            obj2arr(data).forEach( ({key, data}) => {
+                queue[key] += data - ilosc[key];
+            })
+            limit ()
+            animation (obj2arr(data));
+        })
+        const limit = () => {
+            if( 4*limiter > obj2arr(lastSecound).reduce( (sum,{ data }) => sum + data, 0) ){
+                obj2arr(queue).forEach( ({ key, data }) => {
+                    console.log( key + " "+data)
+                    const toAnim = data>limiter?limiter:data;
+                    console.log("toanim: "+toAnim)
+                    queue[key]-=toAnim;
+                    lastSecound[key]+=toAnim;
+                    animateNew( key, toAnim);
+                })
+            }
+        }
+        const animateNew = ( type, count ) => {
+            if ( !['hearts', 'likes', 'wows', 'bocians'].includes(type)){
+                return null;
+            }
+            const random = (from, to) => Math.floor(Math.random()*(to-from))+from;
+            for ( let i=0; i<count; i++ ){
+                const reaction = document.createElement('img');
+                const size = random(30,70);
+                const position = random(0,window.innerWidth-size);
+                reaction.style.marginTop = `${-size-30}px`;
+                reaction.style.width = `${size}px`;
+                reaction.style.height = `${size}px`;
+                reaction.src = `/reactions/${type}.png`;
+                // reaction.style.backgroundImage = 
+                reaction.classList = "falling";
+                reaction.setAttribute("rotationSpeed",random(-20,20));
+                reaction.setAttribute("rotation",0);
+                reaction.style.left = `${position}px`;
+                animBox.appendChild(reaction);
+                fallingReactions.push(reaction);
+            }
+        }
+        const animation = ( data ) => {
+            data.forEach( ({ key, data }) => {
+                elements[ key ].textContent = `${data}`;
+                ilosc[key] = data;
+            })
+        }
+        
+        //animation and limit 
+        const animateAllReactions = () => {
+            const moveDown = ( target ) => {
+                const speed = Math.floor( (150+Number(target.style.width.split('px')[0]))/(frameRate) );
+                target.style.marginTop = `${Number(target.style.marginTop.split('px')[0])+speed}px`;
+            }
+            const rotate = ( target ) => {
+                const rotationSpeed = Number(target.getAttribute("rotationSpeed"))/8;
+                const rotation = Number(target.getAttribute("rotation"))+rotationSpeed;
+                target.setAttribute("rotation",rotation);
+                target.style.transform = `rotate(${rotation}deg)`;
+            }
+            const checkPosition = ( target ) => {
+                if ( Number(target.style.marginTop.split('px')[0]) > window.innerHeight ){
+                    animBox.removeChild( target );
+                    fallingReactions.splice(fallingReactions.indexOf(target),1);
+                }
+            }
+            fallingReactions.forEach( ( elem, index ) => {
+                moveDown( elem );
+                rotate( elem );
+                checkPosition ( elem );
+            })
+            // console.log(fallingReactions.length)
+        }
+        setInterval( () => {
+            animateAllReactions();
+        }, 1000/frameRate);
+        setInterval( () => {
+            lastSecound.hearts = 0;
+            lastSecound.likes = 0;
+            lastSecound.wows = 0;
+            lastSecound.bocians = 0;
+            limit();
+        }, limitCooldown)
+    </script>
+</body>
+</html>

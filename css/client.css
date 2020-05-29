@@ -1,0 +1,72 @@
+body,html{
+    padding: 20px;
+    margin: 0px;
+    height: 100vh;
+    background-color: transparent;
+    /* background-color: #000; */
+    color: #fff;
+    /* font-family: 'Courgette', cursive; */
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 20px;
+    overflow: hidden;
+}
+img{
+    border-radius: 50%;
+    border-style: solid;
+    border-color: #fff;
+    height: 200px;
+    width: 200px;
+    border-width: 5px;
+    opacity: 0%;
+    transition: 1s;
+}
+.container,.speaker,.title,body{
+    display: flex;
+}
+.container,body{
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 1rem;
+}
+.container{
+    align-items: baseline;
+    transition: 1s;
+}
+.speaker,.title{
+    margin:1rem;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+.title{
+    font-size: 5rem;
+    justify-content: flex-start;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0%;
+    text-align: left;
+    transition: 1s;
+}
+.title.animate{
+    width: 100%;
+    margin-left: 1rem;
+}
+
+.name{
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0%;
+    text-align: right;
+    margin-left: -5rem;
+    padding-left: 1rem;
+    font-size: 6rem;
+    transition: 1s;
+}
+.name.animate{
+    width: 100%;
+    margin-left: 1rem;
+}
+img.animate{
+    opacity: 100%;
+}

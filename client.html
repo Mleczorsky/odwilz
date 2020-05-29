@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/client.css">
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <title>Client View</title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="title"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    
+    const speakers = [];
+    const title = document.querySelector('.title');
+    
+    
+    const titleSetter = () => {
+        const length = speakers.length;
+        if ( length == 0 ){
+            title.textContent = "";
+            title.classList.remove("animate")
+        }else if ( length == 1 ){
+            title.textContent = "Mówi:";
+            if ( !title.classList.contains("animate") ) title.classList.add("animate");
+        }else{
+            title.textContent = "Mówią:";
+            if ( !title.classList.contains("animate") ) title.classList.add("animate");
+        }
+    }
+    const crateChild = ({ photo:p, name:n }) => {
+        const photo = document.createElement("img")
+        photo.src = p;
+
+        const name = document.createElement("div");
+        name.textContent = n;
+        name.classList = "name";
+
+        const mainDiv = document.createElement("div");
+        mainDiv.classList = "speaker";
+        return { photo, name, mainDiv }
+    }
+    const addSpeaker = ( speaker ) => {
+        const container = document.querySelector(".container")
+        const { photo, name, mainDiv } = crateChild( speaker );
+        speakers.push(mainDiv)
+        
+        
+        container.appendChild(mainDiv)
+        mainDiv.appendChild(photo)
+        mainDiv.appendChild(name)
+
+        setTimeout( () => { 
+            photo.classList.add("animate")
+            name.classList.add("animate")
+        }, 400);
+    }
+    const removeSpeaker = ( speaker ) => {
+        const container = document.querySelector(".container")
+        const index = speakers.indexOf( ...speakers.filter( x => x.children[1].textContent == speaker.name ) )
+        console.log("index "+index)
+        console.log(speakers)
+        console.log(speakers[index])
+        container.removeChild(speakers[index])
+        speakers.splice(index,1);
+    }
+    const socket = io();
+    socket.on('addSpeaker', (data) => {
+        console.log("add")
+        console.log(data);
+        addSpeaker(data);
+        titleSetter();
+    });
+    socket.on('removeSpeaker', (data) => {
+        console.log("remove")
+        console.log(data)
+        removeSpeaker(data);
+        titleSetter();
+    })
+    </script>
+</body>
+</html>

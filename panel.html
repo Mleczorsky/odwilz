@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel</title>
+    <style>
+        h1{
+            text-align: center;
+        }
+        div{
+            display: block;
+        }
+        button{
+            font-size: 20px;
+            padding: 10px;
+            margin: 10px;
+        }
+        .green,.blue,.red{
+            color: white;
+        }
+        .blue{
+            background-color: blue;
+        }
+        .green{
+            background-color: green;
+        }
+        .red{
+            background-color: red;
+        }
+        .thick{
+            min-width: 240px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Control Panel</h1>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const speakers = [
+            {
+                name:"Jagoda Andrzejewska",
+                photo:"/photos/jagoda.png"
+            },{
+                name:"Maciej Milo",
+                photo:"/photos/milo.png"
+            },{
+                name:"Michał Mękarski",
+                photo:"/photos/michal.png"
+            },{
+                name: "Anna Maćkowska",
+                photo: "/photos/mackula.png"
+            }
+        ]
+        const performers = [
+            "",
+            "Jakub Kulig",
+            "Michał Banaszkiewicz",
+            "Milena Jarońska",
+            "Julia Borkowska",
+            "Wawrzyniec Sokołowski",
+            "Róża Deć",
+            "Ks. Jacek Tomaszewski",
+            "Niespodzianka😉",
+            ""
+        ]
+        const buttons = []
+        const reactions = {
+            hearts:0,
+            likes:0,
+            wows:0,
+            bocians:0
+        }
+        const socket = io();
+
+        const generateButtons = () => {
+
+            const generateAddButtons = (target) => {
+                speakers.forEach( (speaker) => {
+                    const button = document.createElement("button");
+                    target.appendChild(button);
+                    button.textContent = `add ${speaker.name}`;
+                    button.classList.add( "green")
+                    button.addEventListener( 'click', ()=>{socket.emit(`addSpeaker`, speaker)})
+                })
+            }
+            const generateRemoveButtons = ( target ) => {
+                speakers.forEach( (speaker) => {
+                    const button = document.createElement("button");
+                    target.appendChild(button);
+                    button.textContent = `remove ${speaker.name}`;
+                    button.classList.add( "red")
+                    button.addEventListener( 'click', ()=>{socket.emit(`removeSpeaker`, speaker)})
+                })
+            }
+            const generateMediaButtons = ( target ) => {
+                let index = 1;
+                const updateButtons = () => {
+                    socket.emit(`performer`, {
+                        index : index,
+                        performer : performers[index]
+                    })
+                    buttons[0].textContent = `${btns[0].text} ${index-1}`
+                    buttons[1].textContent = btns[1].text = performers[index]
+                    buttons[2].textContent = `${index+1} ${btns[2].text}`
+                }
+                const actionPrev = () => {
+                    if ( index > 1 ) index--;
+                    updateButtons();
+                }
+                const rebroadcast = () => {
+                    updateButtons();
+                }
+                const actionNext = () => {
+                    if ( index < performers.length-2 ) index++;
+                    updateButtons();
+                }
+                const btns = [{
+                        text:" << prev << ",
+                        callback : actionPrev
+                    },{
+                        text:"",
+                        callback : rebroadcast 
+                    },{
+                        text : " >> next >> ",
+                        callback : actionNext
+                    }
+                ]
+                btns.forEach( ({ callback }) => {
+                    const button = document.createElement("button");
+                    target.appendChild( button );
+                    button.classList.add( "blue" )
+                    button.addEventListener( 'click', callback )
+                    buttons.push(button)
+                })
+                updateButtons();
+                buttons[1].classList.add('thick')
+            }
+            const generateFakeReactions = ( target ) => {
+                const button = document.createElement("button")
+                target.appendChild(button);
+                button.textContent = `addReactions`;
+                button.classList.add( "green")
+                button.addEventListener( 'click', ()=>{    
+                    const range = 20;
+                    reactions.hearts += Math.round( Math.random()*range );
+                    reactions.likes += Math.round( Math.random()*range );
+                    reactions.wows += Math.round( Math.random()*range );
+                    reactions.bocians += Math.round( Math.random()*range );
+                    socket.emit(`setReactions`, {
+                        hearts: reactions.hearts,
+                        likes: reactions.likes,
+                        wows: reactions.wows,
+                        bocians: reactions.bocians        
+                    })
+                })
+            }
+            const resetFakeReactions = ( target ) => {
+                const button = document.createElement("button")
+                target.appendChild(button);
+                button.textContent = `resetReactions`;
+                button.classList.add( "red")
+                button.addEventListener( 'click', ()=>{
+                    reactions.hearts = 0;
+                    reactions.likes = 0;
+                    reactions.wows = 0;
+                    reactions.bocians = 0;
+                    socket.emit(`setReactions`, {
+                        hearts: reactions.hearts,
+                        likes: reactions.likes,
+                        wows: reactions.wows,
+                        bocians: reactions.bocians        
+                    })
+                })
+            } 
+            const generateReactionsMode = ( target ) => {
+                const updateButton = () => {
+                    button.textContent = `API communication is ${state?'on':'off'}`;
+                    button.classList.add(`${state?'blue':'red'}`);
+                    button.classList.remove(`${state?'red':'blue'}`);
+                }
+                const button = document.createElement("button")
+                let state = false;
+                target.appendChild(button);
+                updateButton();
+                button.addEventListener( 'click', ()=>{
+                    state = !state;
+                    updateButton()
+                    socket.emit(`apiCommunication`, state)
+                })
+            }
+            
+            const divs = document.querySelectorAll("div")
+            generateAddButtons ( divs[0] )
+            generateRemoveButtons ( divs[1] )
+            generateMediaButtons ( divs[2] )
+            generateReactionsMode ( divs[3] )
+            // generateFakeReactions ( divs[3] )
+            // resetFakeReactions ( divs[3] )
+        }
+        generateButtons()
+
+    </script>
+</body>
+</html>
