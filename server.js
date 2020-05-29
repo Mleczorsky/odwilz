@@ -5,13 +5,16 @@ const io = require('socket.io')(http);
 const { accessSpreadsheet } = require('./spreadsheetsmenager')
 
 let useGoogleApi = false;
-const reactions = Array(7).fill({
-  hearts:0,
-  likes:0,
-  wows:0,
-  bocians:0
-});
-const indexes = Array(7).fill(1);
+const reactions = []
+for(let i=0; i<8; i++ ){
+  reactions.push({
+    hearts:0,
+    likes:0,
+    wows:0,
+    bocians:0
+  });
+}
+const indexes = [1,1,1,1,1,1,1,1];
 let performerId = 0;
 app.use('/css', express.static('css'))
 app.use('/photos', express.static('photos'))
@@ -66,16 +69,16 @@ io.on('connection', (socket) => {
 
 setInterval( () => {
   if ( useGoogleApi ) {
-    accessSpreadsheet( indexes[performerId], performerId ).then( ({data, row}) => {
-      reactions[performerId].likes += data.likes;
-      reactions[performerId].hearts += data.hearts;
-      reactions[performerId].wows += data.wows;
-      reactions[performerId].bocians += data.bocians;
-
-      indexes[performerId] = row;
-      console.log( `performerId: ${performerId}`)
-      console.log( reactions[performerId] )
-      io.emit('setReactions', reactions[performerId] )
+    console.log(`Querying: index ${indexes[performerId]}, arkusz ${performerId} `)
+    accessSpreadsheet( indexes[performerId], performerId ).then( ({arkusz, data, row}) => {
+      console.log({arkusz:arkusz,data:data,row:row})
+      reactions[arkusz].likes += data.likes;
+      reactions[arkusz].hearts += data.hearts;
+      reactions[arkusz].wows += data.wows;
+      reactions[arkusz].bocians += data.bocians;
+      io.emit('setReactions', reactions[arkusz] )
+      indexes[arkusz] = row;
+      console.log(reactions[arkusz])
     })
   }
 }, 2000);

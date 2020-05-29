@@ -29,21 +29,22 @@ async function accessSpreadsheet ( index = 1, arkusz) {
     const rows = await promisify(sheet.getRows)({
         offset:index,
     });
-    const summary = Array(8).fill({
+    const summary = {
         likes : 0,
         hearts : 0,
         wows : 0,
         bocians : 0,
-    })
+    }
     index += rows.length;
     rows.forEach( ( row ) => {
         const resp = countReactions( row );
-        summary[arkusz].likes += resp.likes;
-        summary[arkusz].hearts += resp.hearts;
-        summary[arkusz].wows += resp.wows;
-        summary[arkusz].bocians += resp.bocians;
+        summary.likes += resp.likes;
+        summary.hearts += resp.hearts;
+        summary.wows += resp.wows;
+        summary.bocians += resp.bocians;
     })
     return {
+        arkusz:arkusz,
         data:summary,
         row:index
     }

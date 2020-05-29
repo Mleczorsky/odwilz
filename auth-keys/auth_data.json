@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "jakub-kulig",
+  "private_key_id": "bc245b64812ab2bf43b1c9034b7f168e5ad084cf",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC507vZ9VKkrMfT\n3hwEfEEHN2j0S8PuN2ePvEoYsDf2vFjKtjOp6hYHdpdnnrwr8ZlM6Qz0AjW2k/dD\nJnBEXGZzkauG8RRv9/IdefkCZ/CNvtakoAMOqx+fjqskrHwG7Horiy2abFz3NVtr\nH8G+PrU17N5xsimX4pDZtSzQjB/ESAiXowT5lljrFAmHZrmr0BYzEaarH+NZUFgZ\n493mAFHX+6QhN4QD3V7oIfVXA3b6QhxDyUtMZ93bAVPYbxQFMJT8iBwGafZU2Imy\n0+4i5HACDYB/yAvoRlRFgb/ry3B92WK8SBcrg2itM5opo2uJH4vKgZBOlGl8BS3x\nSbNTpxNxAgMBAAECggEAAgbR4ejnx5V90Wz288KSJ/y994oa/y5aAgqM6VOErLt1\noXJWwmfj6R1tPctQpI8MO7c/9apPgSgAdppE963lTSXdz8kxzp3O5Wzm3xSYnkci\nSqXXGrIZlHEnIy2BZcbu9yobq3c6lVSe5F5yi7td2RJ2A5nsk7Q8Ha+45yZcE1Ur\n/WddBVSPXBOzfoljWdYbVtvH9nrurJpIrDgifLuU3WRorSmtaIniEHrcYG74LkBP\n45Ldkf3uBClc3SFiGFnuspsrVELx5FlHu0VbE5pLj0qX5uNMqvvi7NVNbij1zOF1\nByW0LblY/DYAFnOmWglcKWhw9gqRWsHstB2cVYcrcQKBgQD3GMnhofX9anQgxNFo\n/PQBzK1Fj/r1X5cq5UzDMPfqwvKyC/MXKLI27scEJ83COv0PmLB7qURzEcDO5878\n2XvpjQT0y538XNr5xqODrJHy9enlvSj0t/DQ776qj574fcHJRU+BeCl1hynRcWra\nrKRyXbkSYRkBIP5Y0O6667LHSQKBgQDAhcuk7fApIYJsqNZc3rCttTw9MhrBjNsD\nqCsK/spnoPrz2SXGxK3CwFgJ4c+tU1/coBTowpFIMLdVCZvNIA4xpRsg/I5+7DLm\nfcC46moRvs9GxtjqIybk8koEoRIRcUU1f6nCxBYXe0mFOOWhie/hXYYwNi39xhu1\nrssYO7gi6QKBgQC3etitiq42do20p3E4HFyz2V/wf3FCMrD1UT8m0X3F/Oxp+SWQ\n1M9Aqx1soIHQ8CxpIGAr8wy4xT3+ZXL1nii8y9IaU/gEJI8VWcKhS8s0NhZwWX3H\n+a3/94YE8JCCxB7ZbXYUFT3z32HV+/n0Vq3lnmKGm0MN64nyOXKLqekewQKBgGop\nnXluR8+2jcAzfjmqBw1S8kvglEaE0MT8d/fRNnXcnGXZKW6pSBQrkqCoZ6fxYNw9\nXipYGFsRmhcHfGWptooDvKj8++rbftoBIEQX57OvX4ds4XKDPdBkFxLkax05M+vj\nYQ5oqLH8JzeSf3YLpT7GHtf5GHVnSCJwp8fOLqT5AoGAB9BpUNUSNZzOM8LEjXJS\nEIR6pDqEOQJldmk1x8g7u+2ioVR+Q0wbA934k8G+6k8A828uBPHJweXFRbRmBaSa\nT26eA6Ct9GOeyEkHTkL0mshxi2SKUBnPkX6jzYMfkkdKDqh4Tqc1MZRCziBxT8TC\nbEeUAG0vYL8Tejfk1RM4pDA=\n-----END PRIVATE KEY-----\n",
+  "client_email": "sheets@jakub-kulig.iam.gserviceaccount.com",
+  "client_id": "105351189618176730547",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sheets%40jakub-kulig.iam.gserviceaccount.com"
+}
